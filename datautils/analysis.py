@@ -9,7 +9,6 @@ sns.set_theme(style="ticks", color_codes=True)
 #https://amitness.com/2019/07/identify-text-language-python/#:~:text=Fasttext%20is%20an%20open-source,subword%20information%20and%20model%20compression.
 
 
-
 def my_df_describe(df,name = 'dataset',show = True,path='',save=False):
     
     path_analisis    = ''
@@ -101,7 +100,8 @@ def graph_categorical_distribution(data,name="target",figsize=(6,4),title_name=N
     plt.figure(figsize=figsize)
     total = float(len(data)) # one person per row 
     title_name = "Cat. "+name+" distribution of "+str(int(total))+" elements" if title_name is None else title_name+" of "+str(int(total))+" users"
-    ax = sns.countplot(x=name, data=data) # for Seaborn version 0.7 and more
+    ax = sns.countplot(x=name,hue=name, data=data) # for Seaborn version 0.7 and more
+    plt.legend([],[], frameon=False)
     if rotation != None:
         ax.set_xticklabels(ax.get_xticklabels(), rotation=rotation)
 
@@ -109,7 +109,7 @@ def graph_categorical_distribution(data,name="target",figsize=(6,4),title_name=N
         height = p.get_height()
         ax.text(p.get_x()+p.get_width()/2.,
                 height/3,
-                '{:.2f}%\n{:d}'.format(100*height/total,height),
+                '{:.2f}%\n{:f}'.format(100*height/total,height),
                 ha="center",color=color_text,fontweight='bold')#fontsize=10
     plt.title(title_name)
     if show:
@@ -213,6 +213,39 @@ def mean_value_by_cat_value(data,column_name,target_name):
     mean_values.columns = [column_name,target_name]
     mean_values = mean_values.sort_values(by=target_name, ascending=False)
     return mean_values
+
+
+def graph_count_value_by_cat(data,column_name,target_name,title=None,figsize=(25,11),show=False,save=False,path='',rotation=None):
+
+    if title is None:
+        title = 'Box plot of '+target_name+' by '+column_name
+
+    fig = plt.figure(figsize = figsize)
+    #ax = sns.boxplot(x=data[column_name], y=data[target_name])
+    ax = sns.countplot(x=column_name, hue=target_name, data=data)
+
+    if rotation != None:
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=rotation)
+
+    plt.title(" Boxplot of "+target_name+": by "+column_name)
+    plt.show()
+
+    if show:
+        plt.show()
+
+    figure = ax.get_figure()    
+    if save:    
+        path_images        = os.path.join(path,'images')
+        path_distributions = os.path.join(path_images,'distributions') 
+        for folder in [path,path_images,path_distributions]:
+            if not os.path.isdir(folder):
+                os.mkdir(folder)
+
+        filename_img = os.path.join(path_distributions,title+'.png')
+        print('saving image',filename_img)
+        figure.savefig(filename_img,dpi=400, bbox_inches = 'tight')
+    plt.close()
+    return figure
 
 
 def graph_boxplot_value_by_cat(data,column_name,target_name,title=None,figsize=(25,11),show=False,save=False,path='',rotation=None):
