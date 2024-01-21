@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='datautils',
-    version='0.1demo',
+    version='0.1',
     packages=['datautils',],
     author='Cristian Lazo Quispe',
     author_email='mecatronico.lazo@gmail.com',
